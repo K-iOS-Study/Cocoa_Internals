@@ -114,12 +114,13 @@ for _ in 0...10000000 {
 }
 ```
 
-![image.png](/wikis/2905387011289352997/files/3047453941994685633)
+![image.png](./resources/a.png)
 
 
 ### 순환 참조
 
-![image.png](/wikis/2905387011289352997/files/3047914641459118888)
+![image.png](./resources/b.png)
+
 
 ### 객체 사이 순환 참조 해결방법
 
