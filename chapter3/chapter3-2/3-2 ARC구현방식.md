@@ -49,9 +49,6 @@ Convinience Method로 객체를 만드는 경우 객체는 자동 해제 대상�
 NSDictionary __strong *dictionary = [NSDictionary dictionary]; 
 ```
   
-    
-[3.2.1과 3.2.2 비교 설명 참고 글](https://www.clien.net/service/board/cm_app/1254304)
-
 위처럼 convinience method로 객체 생성할 경우 컴파일러가 변환한 코드
 
 ```objectivec
@@ -72,7 +69,11 @@ objc_retainAutoreleasedReturnValue() 함수를 사용해서 객체를 Autoreleas
   return objc_autoreleaseReturnValue(tmp); 
 } 
 ```
-
+  
+  
+[3.2.1과 3.2.2 비교 설명 참고 글](https://www.clien.net/service/board/cm_app/1254304)
+  
+  
 ## 3.2.3 약한 참조
 
 ```objectivec
