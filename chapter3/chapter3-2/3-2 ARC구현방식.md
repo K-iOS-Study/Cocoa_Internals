@@ -60,13 +60,16 @@ objc_storeStrong(&dictionary, tmp);
 
 objc_retainAutoreleasedReturnValue() 함수를 사용해서 객체를 AutoreleasePool에 등록하고,   
 등록된 객체를 반환받아 그 객체에 대해 소유권을 갖는 것이다(retain)   
+![image](https://user-images.githubusercontent.com/80673932/125595087-d94addaf-dbd0-4530-a0a1-851503108887.png)
+
 근데 항상 retain 하는 것은 아니고 스레드 TLS 영역에 정보를 저장하는 최적화 루틴을 포함한다. 
+(Autorelease Pool을 처리하는 비용이 커서 내부적으로 최적화를 한다.)
 
 ```objectivec
 + (instancetype) dictionary { 
 	instancetype tmp = objc_msgSend(NSDictionary, @selector(alloc)); 
 	objc_msgSend(tmp, @selector(init));	
-  return objc_autoreleaseReturnValue(tmp); 
+	return objc_autoreleaseReturnValue(tmp); 
 } 
 ```
   
@@ -77,7 +80,9 @@ objc_retainAutoreleasedReturnValue() 함수를 사용해서 객체를 Autoreleas
 ## 3.2.3 약한 참조
 
 ```objectivec
-NSString __weak *aString = [[NSString alloc] init]; 
+{
+	NSString __weak *aString = [[NSString alloc] init]; 
+}
 ```
 
 위처럼 weak 변수를 선언했을 때 컴파일러가 변환한 코드
@@ -96,12 +101,13 @@ objc_initWeak은 다음과 같이 구현되어 있다.
 ```objectivec
 id objc_initWeak(id *addr, id val) { 
 	*addr = 0;	
-  if (!val) return nil;	
-  return objc_storeWeak(addr, val); 
+	if (!val) return nil;	
+	return objc_storeWeak(addr, val); 
 }
 ```
 
-objc_storeWeak(addr, val)은 addr 포인터에 있던 이전 객체에 대한 약한 참조는 해지하고 val 객체에 대한 약한 참조를 등록한다.  
+objc_storeWeak(addr, val)은 약한 참조 목록을 저장하는 일종의 해시 테이블을 구현하고 있는데  
+이곳에 addr 포인터에 있던 이전 객체에 대한 약한 참조는 해지하고 val 객체에 대한 약한 참조를 등록한다.  
   
 objc_destroyWeak은 다음과 같이 구현되어있다. 
 
@@ -112,12 +118,31 @@ void objc_destroyWeak(id *addr) {
 }
 ```
  
+objc_destroyWeak_slow() 함수는 objc_storeWeak() 함수로 등록 한 약한 참조 목록에 대한 해시 테이블에서 해당 객체의 약한 참조를 해지한다.  
+약한참조 중인 객체가 사라질 때 nil로 바꿔주는 것은 런타임에서 객체가 소멸될 때 한꺼번에 처리된다. 
+ 
 ### 약한 참조 불가능한 객체
 
 allowsWeakReference 메서드(objc_storeWeak() 함수 내부에서 사용) 의 리턴 값이 NO이면 메모리가 중복 해제됐다고 가정하여 에러를 표시한다.   
 retainWeakReference 메서드(objc_loadWeak() 함수 내부에서 사용) 가 구현되어 있지않거나 NO를 반환할 경우 마찬가지로 약한 참조가 불가능한 객체이다.
 
 ## 3.2.4 자동 반환 방식 
+객체 참조 변수에 autoreleasing 소유권 수식어를 명시적으로 지정하는 자동 반환 방식을 사용할 수 있다.
+```objectivec
+@autoreleasepool {
+	NSDictionary __autoreleasing *dictionary = [[NSDictionary alloc] init];
+}
+```
+위를 컴파일러가 변환한 코드
+
+```objectivec
+id pool = objc_autoreleasePoolPush();
+id tmp = objc_msgSend(NSDictionary, @selector(alloc)); 
+objc_msgSend(tmp, @selector(init));
+NSDictionary *dictionary = tmp; 
+objc_autorelease(dictionary); 
+objc_autoreleasePoolPop(pool);
+```
 
 ## 3.2.5 요약
 ARC 구현 방식은 새로운 운영체제 버전이 나올 때마다 개선된다.   
