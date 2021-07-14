@@ -35,7 +35,7 @@ void objc_storeStrong(id *location, id obj) {
 
 새로 저장하는 obj는 retain으로 소유권을 갖고 기존에 location이 참조하던 객체는 release로 소유권을 반환한다.
 
-  
+ 
   
 ## 3.2.2 자동 반환용 리턴 값
 
@@ -48,6 +48,9 @@ Convinience Method로 객체를 만드는 경우 객체는 자동 해제 대상�
 ```objectivec
 NSDictionary __strong *dictionary = [NSDictionary dictionary]; 
 ```
+  
+    
+[3.2.1과 3.2.2 비교 설명 참고 글](https://www.clien.net/service/board/cm_app/1254304)
 
 위처럼 convinience method로 객체 생성할 경우 컴파일러가 변환한 코드
 
