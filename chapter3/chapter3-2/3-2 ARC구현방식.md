@@ -6,14 +6,22 @@ ARC: 컴파일러가 객체 생명주기를 판단해서 메모리 관리 코드
 
 ## 3.2.1 강한 참조
 
+```objectivec
 NSString __strong *aString = [[NSString alloc] init]; 
+```
 
 위처럼 strong 변수를 선언했을 때 컴파일러가 변환한 코드
 
-id tmp = objc_msgSend(NSString, @selector(alloc)); objc_msgSend(tmp, @selector(init)); NSString* aString; objc_storeStrong(&aString, tmp); 
+```objectivec
+id tmp = objc_msgSend(NSString, @selector(alloc)); 
+objc_msgSend(tmp, @selector(init));
+NSString* aString;
+objc_storeStrong(&aString, tmp); 
+```
 
 objc_storeStong() 함수의 구현은 다음과 같다.
 
+```objectivec
 void objc_storeStrong(id *location, id obj) { 
 	id prev = *location; 
 	if (obj == prev) { 
@@ -23,6 +31,7 @@ void objc_storeStrong(id *location, id obj) {
 	*location = obj; 
 	objc_release(prev); 
 } 
+```
 
 새로 저장하는 obj는 retain으로 소유권을 갖고 기존에 location이 참조하던 객체는 release로 소유권을 반환한다.
 
@@ -34,9 +43,11 @@ objc에서는 '두 단계 초기화 패턴'으로 객체 인스턴스를 만든�
 
 이 두 단계 초기화 패턴을 한꺼번에 처리해주는 초기화 메서드인 
 Convinience Method로 객체를 만드는 경우 객체는 자동 해제 대상이 된다.
+
 ```objectivec
 NSDictionary __strong *dictionary = [NSDictionary dictionary]; 
 ```
+
 위처럼 convinience method로 객체 생성할 경우 컴파일러가 변환한 코드
 
 ```objectivec
