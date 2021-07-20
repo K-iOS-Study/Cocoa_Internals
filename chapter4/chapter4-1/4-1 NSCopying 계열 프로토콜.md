@@ -45,7 +45,7 @@ final class ViewController: UIViewController {
 
 ![Untitled.png](Untitled.png)
 
-복사할 객체와 복사된 객체가 참조하고 있는 주소값이 다르고, property들의 값이 같은 것 확인 할 수 있다.
+복사할 객체와 복사된 객체가 참조하고 있는 주소값이 다르고, property들의 값이 같은 것을 확인 할 수 있다.
 
 ### 복사와 수정이 가능한 객체
 
