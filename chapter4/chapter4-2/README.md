@@ -29,7 +29,7 @@ NSArray처럼 내부에 다른 객체를 포함하는 경우에는 객체를 복
 
 ### **문제점**
 
-![./CopyImage.png](/CopyImage.png)
+![CopyImage.png](./CopyImage.png)
 
 `copiedHolder->_pens = [_pens mutableCopy];`  이 라인을 통해 `NSMutableArray`가 복사된다.
 
