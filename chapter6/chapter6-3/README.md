@@ -4,7 +4,7 @@
 
 대부분 컬렉션 내부 참조 객체의 존재 여부를 확인하는 경우는 배열형보다 집합형 Set을 사용하는 것이 성능에 더 좋다.
 
-![Untitled.png](./Untitled1.png)
+![Untitled.png](./Untitled2.png)
 
 집합 컬렉션의 종류
 
@@ -175,4 +175,4 @@ for (i = 0; i < 100; i++) {
 }
 ```
 
-![Untitled2.png](./Untitled2.png)
+![Untitled2.png](./Untitled1.png)
